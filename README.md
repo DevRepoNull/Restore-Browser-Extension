@@ -33,14 +33,7 @@
 
 ---
 ## 🚀 شروع سریع
-
-### 1. دریافت ابزار
-
-```bash
-git clone https://github.com/your-username/browser-extension-backup.git
-cd browser-extension-backup
-```
-
+فایل‌های ارسالی را در قسمت Code به صورت فایل .Zip دانلود کنید
 یا فایل‌های `pack_browser_extensions.py` و `restore_browser_extensions.py` را به‌صورت دستی در یک پوشه قرار دهید.
 
 ### 2. بکاپ گرفتن از افزونه‌ها
