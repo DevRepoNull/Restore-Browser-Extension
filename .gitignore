@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+dist/
+build/
+*.spec.bak
+chrome_extensions_backup/
+firefox_extensions_backup/
+edge_extensions_backup/
+restored_extensions/
+.DS_Store
+*.log
