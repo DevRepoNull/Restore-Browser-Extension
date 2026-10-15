@@ -1,188 +1,133 @@
-# 🧩 Browser Extension Backup & Restore (Fun Edition)
+# Extension Vault
 
-> **«افزونه‌هایت را مثل آب خوردن بکاپ بگیر و برگردان!»**  
-> ابزاری جذاب، cross‑platform و کاملاً رایگان برای **بکاپ‌گیری** و **بازگردانی** افزونه‌های مرورگرهای محبوب: **Chrome**، **Firefox** و **Edge**.
+Desktop tool to **back up and restore** extensions from **Google Chrome**, **Microsoft Edge**, **Brave**, and **Mozilla Firefox**.
 
-![Python](https://img.shields.io/badge/Python-3.6+-blue.svg) ![Platform](https://img.shields.io/badge/Platform-Windows%20|%20macOS%20|%20Linux-lightgrey) ![License](https://img.shields.io/badge/License-MIT-green)
+It runs as a windowed app on Windows, macOS, and Linux. Release builds are single executables — no Python install required.
 
----
-
-## ✨ ویژگی‌های شاخص
-
-- 🖥️ **پشتیبانی از سه مرورگر اصلی** – Chrome (🌐)، Firefox (🦊) و Edge (🧭)
-- 💻 **Cross‑Platform کامل** – روی ویندوز، macOS و لینوکس بدون هیچ تغییری اجرا می‌شود
-- 🎨 **رابط کاربری رنگی و انیمیشنی** – منوی تعاملی با هدرهای ASCII، اسپینرهای زنده و پیام‌های رنگی
-- 🛡️ **بکاپ مقاوم** – ابتدا با خود مرورگر بسته‌بندی می‌کند؛ در صورت خطا، فایل ZIP کامل تهیه می‌شود
-- 🔄 **بازگردانی هوشمند** – برای Chrome/Edge به‌صورت Unpacked آماده‌ی بارگذاری دستی، برای Firefox مستقیماً به پروفایل کپی می‌شود
-- 📦 **بدون وابستگی خارجی** – فقط پایتون استاندارد (هیچ pip نیازی نیست!)
-- 📁 **ساختار قابل‌حمل** – کل پوشه‌ی ابزار را می‌توان با فلش یا شبکه به سیستم دیگر منتقل کرد
+[![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)](#)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ---
 
-## 📋 پیش‌نیاز
+## Why this exists
 
-- **Python 3.6 یا جدیدتر**  
-  اگر پایتون را نصب ندارید، از [python.org](https://www.python.org/downloads/) دریافت کنید.  
-  برای بررسی نسخه‌ی نصب‌شده:
+Moving to a new machine, or resetting a profile, usually means reinstalling every add-on by hand. Extension Vault copies the installed extension files from the browser profile, stores them next to the app, and puts them back later.
+
+---
+
+## Features
+
+- **Graphical app** (Tkinter) — pick a browser, choose a folder, Backup or Restore
+- **CLI** still available for scripts and power users
+- **Chromium packing** via the browser’s own `--pack-extension`, with ZIP fallback
+- **Firefox** copies `.xpi` files (or zips unpacked add-ons) from the active profile
+- **Brave** supported in addition to Chrome and Edge
+- **No runtime pip dependencies** — Python standard library only
+- **Ready-made binaries** for Windows (`.exe`), macOS, and Linux via GitHub Actions + PyInstaller
+
+---
+
+## Install without Python (recommended)
+
+1. Open the [Releases](../../releases) page.
+2. Download the build for your OS:
+   - Windows: `ExtensionVault.exe`
+   - macOS: `ExtensionVault`
+   - Linux: `ExtensionVault`
+3. Run it. On macOS/Linux you may need `chmod +x ExtensionVault`.
+
+GitHub Actions workflow: [`.github/workflows/release.yml`](.github/workflows/release.yml). Tag a version (`v2.0.0`) or run the workflow manually to produce artifacts.
+
+---
+
+## Run from source
+
+Requires **Python 3.9+**. No extra packages.
 
 ```bash
-  python --version
-  # یا
-  python3 --version
+git clone https://github.com/DevRepoNull/Restore-Browser-Extension.git
+cd Restore-Browser-Extension
+python app.py
 ```
 
----
-## 🚀 شروع سریع
-فایل‌های ارسالی را در قسمت Code به صورت فایل .Zip دانلود کنید
+Close the target browser before backup or restore (especially Firefox).
 
-فایل‌های `pack_browser_extensions.py` و `restore_browser_extensions.py` را به‌صورت دستی در یک پوشه قرار دهید.
+### Command line
 
-### 2. بکاپ گرفتن از افزونه‌ها
-**مهم:** پیش از شروع، مرورگر مربوطه را **کاملاً ببندید** (مخصوصاً برای Firefox).
+```bash
+python app.py --cli backup --browser Chrome
+python app.py --cli restore --browser Firefox
+```
+
+The older scripts still work:
 
 ```bash
 python pack_browser_extensions.py
-```
-
-منوی جذاب زیر نمایش داده می‌شود:
-
-```text
-============================================================
-🎒  BROWSER EXTENSION PACKER  🎒
-Backup your extensions with a touch of fun!
-============================================================
-
-Select the browser to backup:
-  [1] 🌐 Google Chrome
-  [2] 🦊 Mozilla Firefox
-  [3] 🧭 Microsoft Edge
-
-👉 Enter number (1-3):
-```
-
-ا انتخاب مرورگر، عملیات بکاپ شروع می‌شود. پس از پایان، پوشه‌ای با نام `[browser]_extensions_backup` در کنار اسکریپت ایجاد می‌شود:
-
-- `chrome_extensions_backup/`
-    
-- `firefox_extensions_backup/`
-    
-- `edge_extensions_backup/`
-
-### 3. انتقال به سیستم مقصد
-
-کل **پوشه‌ی اصلی** (شامل اسکریپت‌ها + پوشه‌ی بکاپ) را به رایانه‌ی دیگر کپی کنید.
-
-### 4. بازگردانی افزونه‌ها
-
-```bash
 python restore_browser_extensions.py
 ```
 
-دوباره مرورگر مقصد را انتخاب کنید:
+---
+
+## How restore works
+
+| Browser | After restore |
+| --- | --- |
+| Chrome / Edge / Brave | Folders appear under `restored_extensions/`. Open `chrome://extensions` (or `edge://` / `brave://`), enable **Developer mode**, **Load unpacked**. |
+| Firefox | `.xpi` files are copied into the default profile `extensions/` directory. Start Firefox with the browser fully closed during copy. |
+
+Chromium unpacked reloads get a **new extension ID** because the original developer key is not in the profile. Settings keyed to the old ID are not migrated.
+
+---
+
+## Layout after a backup
 
 ```text
-============================================================
-🔄  BROWSER EXTENSION RESTORE  🔄
-Bring back your beloved extensions!
-============================================================
-
-Select the browser to restore extensions for:
-  [1] 🌐 Google Chrome
-  [2] 🦊 Mozilla Firefox
-  [3] 🧭 Microsoft Edge
-
-👉 Enter number (1-3):
+Restore-Browser-Extension/
+├── app.py
+├── extension_backup/
+│   ├── core.py
+│   └── gui.py
+├── chrome_extensions_backup/
+├── firefox_extensions_backup/
+├── edge_extensions_backup/
+├── brave_extensions_backup/
+└── restored_extensions/
 ```
 
-####  برای Chrome / Edge:
-
-- یک پوشه‌ی `restored_extensions` ساخته می‌شود که داخل آن پوشه‌های جداگانه‌ی هر افزونه قرار دارد.
-    
-- مرورگر را باز کنید و به `chrome://extensions` (برای Edge: `edge://extensions`) بروید.
-    
-- **Developer mode** (حالت توسعه‌دهنده) را فعال کنید.
-    
-- روی **Load unpacked** کلیک کرده و پوشه‌ی افزونه‌ی مورد نظر را انتخاب کنید.
-    
-
-#### 🔸 برای Firefox:
-
-- افزونه‌ها مستقیماً به پوشه‌ی پروفایل پیش‌فرض Firefox کپی می‌شوند.
-    
-- **حتماً Firefox بسته باشد** وگرنه خطا رخ می‌دهد!
-    
-- پس از اتمام، Firefox را باز کنید – افزونه‌ها به‌طور خودکار ظاهر می‌شوند.
+The working folder can be changed in the UI.
 
 ---
-## 📁 ساختار پوشه‌ها پس از اجرا
 
-```text
-CrxExtractor/
-├── pack_browser_extensions.py       # اسکریپت بکاپ
-├── restore_browser_extensions.py    # اسکریپت بازگردانی
-├── chrome_extensions_backup/        # بکاپ Chrome (ساخته می‌شود)
-│   ├── ahmpjcflkgiildlgicmcieglgoilbfdp.crx
-│   └── ...
-├── firefox_extensions_backup/       # بکاپ Firefox (ساخته می‌شود)
-│   ├── uBlock0@raymondhill.net.xpi
-│   └── ...
-├── edge_extensions_backup/          # بکاپ Edge (ساخته می‌شود)
-└── restored_extensions/             # پوشه‌ی بازگردانی (ساخته می‌شود)
-    ├── ahmpjcflkgiildlgicmcieglgoilbfdp/
-    └── ...
+## Building binaries locally
+
+```bash
+pip install -r requirements-build.txt
+pyinstaller --noconfirm --clean --windowed --onefile --name ExtensionVault app.py
 ```
 
----
-## ❓ سوال‌های رایج
-<details> <summary><b>چرا بعضی افزونه‌های Chrome/Edge به‌جای فایل .crx، بکاپ .zip می‌گیرند؟</b></summary>
-
-فرایند بسته‌بندی داخلی کروم (`--pack-extension`) ممکن است به دلایل امنیتی یا محدودیت‌های نسخه‌ی کروم شکست بخورد. اسکریپت در این حالت خودکار یک نسخه‌ی ZIP کامل از افزونه تهیه می‌کند که هنگام بازگردانی دقیقاً به همان شکل Load unpacked در مرورگر بارگذاری می‌شود.
-
-</details><details> <summary><b>چرا افزونه‌ها بعد از بازگردانی Chrome/Edge شناسه (ID) جدیدی می‌گیرند؟</b></summary>
-
-بکاپ بدون کلید خصوصی توسعه‌دهنده انجام می‌شود. در نتیجه هنگام بارگذاری مجدد، افزونه یک ID تصادفی جدید دریافت می‌کند. این روی کارکرد افزونه تأثیر نمی‌گذارد، اما داده‌های ذخیره‌شده‌ی محلی (مانند تنظیمات) که به ID قدیمی وابسته‌اند، منتقل نمی‌شوند.
-
-</details><details> <summary><b>پیغام «No Firefox extensions found» می‌گیرم، ولی افزونه دارم!</b></summary>
-
-- مطمئن شوید Firefox کاملاً بسته باشد.
-    
-- پروفایل پیش‌فرض را بررسی کنید: در نوار آدرس `about:profiles` را باز کنید و ببینید کدام پروفایل «Default Profile» است.
-    
-- اسکریپت از فایل `extensions.json` داخل پوشه‌ی پروفایل می‌خواند. اگر افزونه‌ی شما در آن لیست نیست (مثلاً افزونه‌ی موقتی از `about:debugging`)، آن را یک‌بار از فروشگاه افزونه نصب کنید تا در لیست ثبت شود.
-    
-
-</details><details> <summary><b>آیا می‌توانم مسیر بکاپ را تغییر دهم؟</b></summary>
-
-به‌طور پیش‌فرض پوشه‌ی بکاپ کنار اسکریپت ساخته می‌شود. اگر می‌خواهید مسیر دلخواه تنظیم کنید، ثابت `BACKUP_DIR` را در تابع مربوطه تغییر دهید (خطوط ابتدایی توابع `pack_chromium` و `pack_firefox` و ...).  
-در نسخه‌های بعدی ممکن است قابلیت انتخاب مسیر به منو اضافه شود.
-
-</details><details> <summary><b>آیا با Brave یا سایر مرورگرهای مبتنی بر Chromium کار می‌کند؟</b></summary>
-
-در حال حاضر سه مرورگر پشتیبانی می‌شوند، اما با کمی تغییر در مسیرها می‌توان آن را برای مرورگرهای Chromium‑based دیگر نیز استفاده کرد. لطفاً Issue ثبت کنید تا در نسخه‌های بعدی اضافه شود.
-
-</details>
-
----
-## 🛠️ رفع مشکلات احتمالی
-
-|خطا|دلیل احتمالی|راه‌حل|
-|---|---|---|
-|`FileNotFoundError: Chrome executable not found`|مسیر نصب مرورگر استاندارد نیست|مسیر صحیح را در تابع `get_browser_exe` اضافه کنید یا مرورگر را از مسیر پیش‌فرض نصب کنید.|
-|`Extensions folder not found`|پوشه‌ی پروفایل یافت نشد یا مرورگر نصب نیست|مرورگر را یک‌بار اجرا کرده تا پروفایل ساخته شود.|
-|بازگردانی Firefox خطا می‌دهد|Firefox باز است|حتماً Firefox را کاملاً ببندید (حتی فرایندهای پس‌زمینه را در Task Manager بررسی کنید).|
-|پس از بازگردانی Chrome/Edge افزونه کار نمی‌کند|پوشه ناقص استخراج شده|دوباره restore را اجرا کنید. یا پوشه را دستی زیپ/آنزیپ کنید.|
+Output: `dist/ExtensionVault` (or `ExtensionVault.exe` on Windows).
 
 ---
 
-## 🤝 مشارکت
+## Troubleshooting
 
-پیشنهادات، بهبودها و گزارش باگ‌ها را با آغوش باز می‌پذیریم!  
-لطفاً از طریق [Issues](https://github.com/your-username/browser-extension-backup/issues) یا فرستادن Pull Request مشارکت کنید.
+| Symptom | What to try |
+| --- | --- |
+| Browser executable not found | Install the browser in the default location, or use ZIP-only backup (automatic fallback). |
+| Extensions folder not found | Open the browser once so a profile is created. Only the **Default** Chromium profile is scanned. |
+| Firefox restore fails | Quit Firefox completely (check the system tray / Activity Monitor). |
+| Empty Firefox backup | Confirm add-ons in `about:addons`. Temporary `about:debugging` loads are not listed in `extensions.json`. |
+| Chrome packing fails | Expected on some versions; the app stores a ZIP of the unpacked folder instead. |
 
 ---
 
-## 📄 مجوز
+## Contributing
 
-این پروژه تحت مجوز MIT منتشر شده است. جزئیات در فایل [LICENSE](https://license/).
+Issues and pull requests are welcome. Please describe OS, browser, and whether you used the GUI, CLI, or a packaged binary.
 
-<div align="center"> <br> <b>ساخته شده با ❤️ و پایتون</b><br> <sub>افزونه‌هایتان را امن نگه دارید!</sub> </div> ```
+---
+
+## License
+
+MIT — see [LICENSE](LICENSE).
